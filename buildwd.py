@@ -68,14 +68,14 @@ def buildWD(file_name, writeCSV=False):
     matCol = 0
     for line in f:
         words = line.split()
-        colnames.append(words[0])
-        subjects.append(words[1])
         tweetColumn = np.zeros(len(wordRowDict))
         for word in words[2:]:
             pword = processWord(word)
             if pword in wordRowDict:
                 tweetColumn[wordRowDict[pword]] = tweetColumn[wordRowDict[pword]] + 1
         if np.sum(tweetColumn) > 0.5*(len(words)-2):
+            colnames.append(words[0])
+            subjects.append(words[1])
             mat[:,matCol] = tweetColumn
             matCol += 1
     f.close()
