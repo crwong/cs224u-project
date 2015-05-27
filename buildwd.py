@@ -10,6 +10,7 @@ File should have a tweet on each line. Each line should contain id, subject, twe
 def buildWords(file_name):
     wordCountDict = defaultdict(int)
     wordRowDict = {}
+    rownames = []
     numTweets = 0
     f = open(file_name)
     row = 0
@@ -20,11 +21,12 @@ def buildWords(file_name):
             pword = processWord(word)
             wordCountDict[pword] = wordCountDict[pword] + 1
             if wordCountDict[pword] > 10 and pword not in wordRowDict:
+                rownames.append(pword)
                 wordRowDict[pword] = row
                 row += 1
     f.close()
     print len(wordRowDict)
-    return wordRowDict, numTweets
+    return wordRowDict, numTweets, rownames
 
 """
 Doesn't work well.
@@ -48,11 +50,15 @@ def writeToCSV(mat, colnames, wordRowDict, file_name):
     f.close()  
 
 """
+Builds the WD matrix.
+colnames contains the tweet ids.
+rownames contains the words.
+subjects contains the correct subjects in the order of colnames.
 File should have a tweet on each line. Each line should contain id, subject, tweet.
 """
 def buildWD(file_name, writeCSV=False):
     print "Building word dictionary"
-    wordRowDict, numTweets = buildWords(file_name)
+    wordRowDict, numTweets, rownames = buildWords(file_name)
     print "Word dictionary finished"
     mat = np.zeros((len(wordRowDict), numTweets))
     colnames = []
@@ -79,4 +85,4 @@ def buildWD(file_name, writeCSV=False):
         print "Writing to CSV"
         writeToCSV(mat, colnames, wordRowDict, "trainWords.csv")
         print "Finished writing to CSV"
-    return (mat, colnames, subjects)
+    return (mat, colnames, rownames, subjects)
