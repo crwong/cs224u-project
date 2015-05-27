@@ -59,8 +59,9 @@ def buildWD(file_name, writeCSV=False):
     subjects = []
     print "Building word document matrix"
     f = open(file_name)
-    for line in enumerate(f):
-        words = line[1].split()
+    matCol = 0
+    for line in f:
+        words = line.split()
         colnames.append(words[0])
         subjects.append(words[1])
         tweetColumn = np.zeros(len(wordRowDict))
@@ -68,8 +69,11 @@ def buildWD(file_name, writeCSV=False):
             pword = processWord(word)
             if pword in wordRowDict:
                 tweetColumn[wordRowDict[pword]] = tweetColumn[wordRowDict[pword]] + 1
-        mat[:,line[0]] = tweetColumn
+        if np.sum(tweetColumn) > 0.5*(len(words)-2):
+            mat[:,matCol] = tweetColumn
+            matCol += 1
     f.close()
+    mat = mat[:,0:matCol]
     print "Word document matrix finished"
     if writeCSV:
         print "Writing to CSV"
