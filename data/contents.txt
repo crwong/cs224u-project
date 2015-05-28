@@ -2,5 +2,5 @@ In the repository:
 - training.txt
 - test.txt
 
-Under the .gitignore, so move these files in yourself manually
-- glove.6B.50d.txt (From the codelab)
+In this directory's .gitignore, so move these files in yourself manually:
+- glove.6B.50d.txt (From the cs224u codelab)
