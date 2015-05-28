@@ -4,8 +4,10 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
+TRAIN_FILE = 'data/training.txt'
+
 def tfidf(mat=None, rownames=None):
-    """TF-IDF on mat. rownames is unused; it's an argument only 
+    """TF-IDF on mat. rownames is unused; it's an argument only
     for consistency with other methods used here"""
     colsums = np.sum(mat, axis=0)
     doccount = mat.shape[1]
@@ -27,7 +29,7 @@ def tfidf_logreg(train_file):
     rownames = wd[2]
     subjects = wd[3]
     idf = tfidf(wd[0], rownames)
-    
+
     trainMat = np.zeros((len(colnames), wd[0].shape[1]))
     f = open(train_file)
     matCol = 0
@@ -50,7 +52,7 @@ def tfidf_logreg(train_file):
     for s in enumerate(subjects):
         if s[1] == 'Sports':
             trainVals[s[0]] = 1
-            
+
     logreg = linear_model.LogisticRegression()
     logreg.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
     return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
@@ -61,7 +63,7 @@ def tfidf_knn(train_file):
     rownames = wd[2]
     subjects = wd[3]
     idf = tfidf(wd[0], rownames)
-    
+
     trainMat = np.zeros((len(colnames), wd[0].shape[1]))
     f = open(train_file)
     matCol = 0
@@ -84,7 +86,7 @@ def tfidf_knn(train_file):
     for s in enumerate(subjects):
         if s[1] == 'Sports':
             trainVals[s[0]] = 1
-            
+
     knn = neighbors.KNeighborsClassifier(n_neighbors=10)
     knn.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
     return knn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
@@ -98,7 +100,7 @@ def tfidf_shallownn(train_file):
     rownames = wd[2]
     subjects = wd[3]
     idf = tfidf(wd[0], rownames)
-    
+
     trainMat = np.zeros((len(colnames), wd[0].shape[1]))
     f = open(train_file)
     matCol = 0
@@ -123,12 +125,15 @@ def tfidf_shallownn(train_file):
             trainVals[s[0],0] = 1
         elif s[1] == 'Politics':
             trainVals[s[0],1] = 1
-            
+
     snn = shallownn.ShallowNeuralNetwork(input_dim=trainMat.shape[1], hidden_dim=5, output_dim=2)
     snn.train(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7),:], display_progress=True, maxiter=10)
     return snn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):,:])
 
-score = tfidf_shallownn("training.txt")
-
-            
-
+if __name__ == "__main__":
+    score_shallownn = tfidf_shallownn(TRAIN_FILE)
+    print 'ShallowNN:', score_shallownn
+    score_knn = tfidf_knn(TRAIN_FILE)
+    print 'KNN:', score_knn
+    score_logreg = tfidf_logreg(TRAIN_FILE)
+    print 'LogReg: ', score_logreg

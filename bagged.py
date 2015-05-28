@@ -3,6 +3,8 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
+TRAIN_FILE = 'data/training.txt'
+
 def bag_logreg(train_file):
     wd = buildwd.buildWD(train_file)
     colnames = wd[1]
@@ -41,5 +43,9 @@ def bag_knn(train_file):
     knn.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
     return knn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
 
-score = bag_knn("training.txt")
-    
+if __name__ == "__main__":
+    score_knn = bag_knn(TRAIN_FILE)
+    print 'KNN:', score_knn
+    score_logreg = bag_logreg(TRAIN_FILE)
+    print 'LogReg:', score_logreg
+
