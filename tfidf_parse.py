@@ -1,4 +1,5 @@
 import buildwd
+import shallownn
 import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
@@ -84,11 +85,50 @@ def tfidf_knn(train_file):
         if s[1] == 'Sports':
             trainVals[s[0]] = 1
             
-    knn = neighbors.KNeighborsClassifier()
+    knn = neighbors.KNeighborsClassifier(n_neighbors=10)
     knn.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
     return knn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
 
-score = tfidf_knn("training.txt")
+"""
+Doesn't really work
+"""
+def tfidf_shallownn(train_file):
+    wd = buildwd.buildWD(train_file)
+    colnames = wd[1]
+    rownames = wd[2]
+    subjects = wd[3]
+    idf = tfidf(wd[0], rownames)
+    
+    trainMat = np.zeros((len(colnames), wd[0].shape[1]))
+    f = open(train_file)
+    matCol = 0
+    for line in f:
+        words = line.split()
+        if words[0] in colnames:
+            trainRow = np.zeros(wd[0].shape[1])
+            numWords = 0
+            for word in words[2:]:
+                pword = buildwd.processWord(word)
+                if pword in rownames:
+                    numWords += 1
+                    trainRow = trainRow + idf[0][rownames.index(pword)]
+            trainRow = (trainRow*1.0) / numWords
+            trainMat[matCol,:] = trainRow
+            matCol += 1
+    f.close()
+
+    trainVals = np.zeros((len(subjects),2))
+    for s in enumerate(subjects):
+        if s[1] == 'Sports':
+            trainVals[s[0],0] = 1
+        elif s[1] == 'Politics':
+            trainVals[s[0],1] = 1
+            
+    snn = shallownn.ShallowNeuralNetwork(input_dim=trainMat.shape[1], hidden_dim=5, output_dim=2)
+    snn.train(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7),:], display_progress=True, maxiter=10)
+    return snn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):,:])
+
+score = tfidf_shallownn("training.txt")
 
             
 
