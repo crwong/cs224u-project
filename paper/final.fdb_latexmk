@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1433887605 "acl2014.tex" "acl2014.pdf" "acl2014" 1433887606
+["pdflatex"] 1433888255 "final.tex" "final.pdf" "final" 1433888255
   "/usr/local/texlive/2013/texmf-dist/tex/latex/base/article.cls" 1254151887 20571 b8bd218bf2e18b4f5817ee643cd9c515 ""
   "/usr/local/texlive/2013/texmf-dist/tex/latex/base/latexsym.sty" 1254151887 2717 322ad1a37c6c9974574bf6f55cbc9d77 ""
   "/usr/local/texlive/2013/texmf-dist/tex/latex/base/size11.clo" 1254151887 9058 640f9c40a6d912e30839a669c8a999ec ""
@@ -9,10 +9,10 @@
   "/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/ot1ptm.fd" 1137110629 961 15056f4a61917ceed3a44e4ac11fcc52 ""
   "/usr/local/texlive/2013/texmf-dist/tex/latex/psnfss/times.sty" 1156702453 857 6c716f26c5eadfb81029fcd6ce2d45e6 ""
   "/usr/local/texlive/2013/texmf-dist/tex/latex/url/url.sty" 1264379145 21932 e3a9cf32ee9b853b42be14c2f25b873c ""
-  "acl2014.aux" 1433887606 716 f1bceb8fa5aac2f0503563ab74531082 ""
   "acl2014.sty" 1433887571 14184 dc3cf2cc5e8e06a68abac509d06e39ce ""
-  "acl2014.tex" 1433887547 17766 30553637ae8a6b43b9d4b8ba81bee56f ""
+  "final.aux" 1433888255 716 f1bceb8fa5aac2f0503563ab74531082 ""
+  "final.tex" 1433888253 17128 888fc5882a5de4548647fe6a712b31d1 ""
   (generated)
-  "acl2014.pdf"
-  "acl2014.aux"
-  "acl2014.log"
+  "final.pdf"
+  "final.aux"
+  "final.log"
