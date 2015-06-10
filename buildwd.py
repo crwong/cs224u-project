@@ -47,7 +47,7 @@ def writeToCSV(mat, colnames, wordRowDict, file_name):
             if not j == len(colnames)-1:
                 toWrite += ", "
         f.write(toWrite)
-    f.close()  
+    f.close()
 
 """
 Builds the WD matrix.
@@ -86,3 +86,22 @@ def buildWD(file_name, writeCSV=False):
         writeToCSV(mat, colnames, wordRowDict, "trainWords.csv")
         print "Finished writing to CSV"
     return (mat, colnames, rownames, subjects)
+
+
+subjectToValue = ['android','basic','coffee','dontjudgeme','earthquake','egypt',
+    'election','freedom','god','haiti','happy','harrypotter','healthcare',
+    'immigration','indonesia','ipod','love','mubarak','obama','obamacare',
+    'question','sotu','teaparty','tsunami','usa','win','wiunion']
+
+subjectToValue_sports_politics = ['Politics', 'Sports']
+
+def trainValsFromSubjects(subjects, sports_politics_dataset=False):
+    reference = subjectToValue
+    if sports_politics_dataset:
+        reference = subjectToValue_sports_politics
+
+    trainVals = np.zeros(len(subjects))
+    for s in enumerate(subjects):
+        trainVals[s[0]] = reference.index(s[1])
+    return trainVals
+

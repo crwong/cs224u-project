@@ -4,7 +4,7 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-TRAIN_FILE = 'data/training.txt'
+TRAIN_FILE = 'data/topics_tiny/ALL_tiny.txt'
 
 def tfidf(mat=None, rownames=None):
     """TF-IDF on mat. rownames is unused; it's an argument only
@@ -48,10 +48,7 @@ def tfidf_logreg(train_file):
             matCol += 1
     f.close()
 
-    trainVals = np.zeros(len(subjects))
-    for s in enumerate(subjects):
-        if s[1] == 'Sports':
-            trainVals[s[0]] = 1
+    trainVals = buildwd.trainValsFromSubjects(subjects)
 
     logreg = linear_model.LogisticRegression()
     logreg.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
@@ -82,10 +79,7 @@ def tfidf_knn(train_file):
             matCol += 1
     f.close()
 
-    trainVals = np.zeros(len(subjects))
-    for s in enumerate(subjects):
-        if s[1] == 'Sports':
-            trainVals[s[0]] = 1
+    trainVals = buildwd.trainValsFromSubjects(subjects)
 
     knn = neighbors.KNeighborsClassifier(n_neighbors=10)
     knn.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])

@@ -2,9 +2,9 @@
 
 import os
 
-NUM_TWEETS = 1000
+NUM_TWEETS = 50
 
-SUFFIX = '_tiny'
+SUFFIX = '_micro'
 DIR_NAME = 'topics'
 TARGET_DIR_NAME = 'topics' + SUFFIX
 EXT = '.txt'

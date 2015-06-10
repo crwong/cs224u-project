@@ -4,7 +4,7 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-TRAIN_FILE = 'data/training.txt'
+TRAIN_FILE = 'data/topics_tiny/ALL_tiny.txt'
 
 GLOVE_MAT = None
 GLOVE_VOCAB = None
@@ -84,36 +84,34 @@ def glove_knn(train_file, trainMat=None):
 
     wd = buildwd.buildWD(train_file)
     labels = wd[3]
-    trainVals = np.zeros(len(labels))
-    for s in enumerate(labels):
-        if s[1] == 'Sports':
-            trainVals[s[0]] = 1
+    trainVals = buildwd.trainValsFromSubjects(labels)
 
     knn = neighbors.KNeighborsClassifier(n_neighbors=5)
     knn.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
     return knn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
 
 def glove_logreg(train_file, trainMat=None):
+    logreg, trainMat, trainVals = get_glove_logreg(train_file, trainMat)
+    return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
+
+def get_glove_logreg(train_file, trainMat=None):
     if trainMat == None:
         trainMat = buildGloveTrainMat(train_file)
 
     wd = buildwd.buildWD(train_file)
     labels = wd[3]
-    trainVals = np.zeros(len(labels))
-    for s in enumerate(labels):
-        if s[1] == 'Sports':
-            trainVals[s[0]] = 1
+    trainVals = buildwd.trainValsFromSubjects(labels)
 
     logreg = linear_model.LogisticRegression()
     logreg.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
-    return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
+    return logreg, trainMat, trainVals
 
 if __name__ == "__main__":
     print 'Building GLOVE...'
     GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ',\
                                       header=False, quoting=csv.QUOTE_NONE)
     trainMat = buildGloveTrainMat(TRAIN_FILE)
-    score_knn = glove_knn(TRAIN_FILE, trainMat=trainMat)
-    print 'KNN: ', score_knn
+    # score_knn = glove_knn(TRAIN_FILE, trainMat=trainMat)
+    # print 'KNN: ', score_knn
     score_logreg = glove_logreg(TRAIN_FILE, trainMat=trainMat)
     print 'LogReg: ', score_logreg

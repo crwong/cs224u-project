@@ -3,8 +3,8 @@
 import os
 import re
 
-DIR_NAME = 'topics_tiny'
-SUFFIX = '_tiny.txt'
+DIR_NAME = 'topics_micro'
+SUFFIX = '_micro.txt'
 OUTPUT = 'ALL' + SUFFIX
 OUTPUT_CLEAN = 'ALL_CLEAN' + SUFFIX
 OUTPUT_TAGS = 'ALL_TAGS' + SUFFIX
