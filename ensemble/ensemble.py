@@ -7,6 +7,7 @@ MODELS = [
   'gloveTwitter',
   'tfidf',
   'baggedSent',
+  'gloveIMDB'
 ]
 NUM_MODELS = len(MODELS)
 FILES = [('out_%s-tiny.txt' % model) for model in MODELS]
@@ -30,12 +31,14 @@ def ensemble(models, weights, outfile):
     arr = weights[0] * models[0][i] +\
           weights[1] * models[1][i] +\
           weights[2] * models[2][i] +\
-          weights[3] * models[3][i]
+          weights[3] * models[3][i] +\
+          weights[4] * models[4][i]
     prediction = np.argmax(arr)
     predictions.append(prediction)
   assert len(predictions) == len(TRUTHS)
   score = calculateScore(predictions)
-  s = '%.1f,%.1f,%.1f,%.1f,%.5f' % (weights[0], weights[1], weights[2], weights[3], score)
+  s = '%.1f,%.1f,%.1f,%.1f,%.1f,%.5f' %\
+      (weights[0], weights[1], weights[2], weights[3], weights[4], score)
   output(s, outfile)
 
 def main():
@@ -45,8 +48,9 @@ def main():
     for weight1 in WEIGHTS:
       for weight2 in WEIGHTS:
         for weight3 in WEIGHTS:
-          weights = [weight0, weight1, weight2, weight3]
-          ensemble(models, weights, outfile)
+          for weight4 in WEIGHTS:
+            weights = [weight0, weight1, weight2, weight3, weight4]
+            ensemble(models, weights, outfile)
   outfile.close()
 
 if __name__ == "__main__":

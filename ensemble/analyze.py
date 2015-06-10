@@ -2,7 +2,7 @@
 
 import numpy as np
 
-NUM_MODELS = 4
+NUM_MODELS = 5
 OUTPUT = 'ensemble_out.txt'
 
 def analyzeOutput():

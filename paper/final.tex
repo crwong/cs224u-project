@@ -2,7 +2,9 @@
 \usepackage{acl2014}
 \usepackage{times}
 \usepackage{url}
+\usepackage{amsmath}
 \usepackage{latexsym}
+\usepackage{algorithm, algpseudocode}
 
 %\setlength\titlebox{5cm}
 
@@ -12,403 +14,205 @@
 % in the camera-ready version and ask you to change it back.
 
 
-\title{Instructions for ACL-2014 Proceedings}
+\title{Analyzing Tweets for Topic Classification}
 
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  {\tt email@domain} \\}
+\author{Logan Short, Vishnu Sundaresan, Christopher Wong \\
+  Department of Computer Science, Stanford University \\
+  {\tt \{lshort,vishnu,crwong\}@stanford.edu}}
 
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-  This document contains the instructions for preparing a camera-ready
-  manuscript for the proceedings of ACL-2014. The document itself
-  conforms to its own specifications, and is therefore an example of
-  what your manuscript should look like. These instructions should be
-  used for both papers submitted for review and for final versions of
-  accepted papers.  Authors are asked to conform to all the directions
-  reported in this document.
+(TODO)
 \end{abstract}
-
-\section{Credits}
-
-This document has been adapted from the instructions for earlier ACL
-proceedings, including those for ACL-2012 by Maggie Li and Michael
-White, those from ACL-2010 by Jing-Shing Chang and Philipp Koehn,
-those for ACL-2008 by Johanna D. Moore, Simone Teufel, James Allan,
-and Sadaoki Furui, those for ACL-2005 by Hwee Tou Ng and Kemal
-Oflazer, those for ACL-2002 by Eugene Charniak and Dekang Lin, and
-earlier ACL and EACL formats. Those versions were written by several
-people, including John Chen, Henry S. Thompson and Donald
-Walker. Additional elements were taken from the formatting
-instructions of the {\em International Joint Conference on Artificial
-  Intelligence}.
 
 \section{Introduction}
 
-The following instructions are directed to authors of papers submitted
-to ACL-2014 or accepted for publication in its proceedings. All
-authors are required to adhere to these specifications. Authors are
-required to provide a Portable Document Format (PDF) version of their
-papers. \textbf{The proceedings are designed for printing on A4
-  paper.}
+With an overarching goal of making sense of the massive amount of Twitter data in the form of Tweets, our project focuses on characterizing Tweets by their associated specific topics, ignoring the occurrences of hashtags. In addition to simply using standalone learning models such as a bag-of-words model, neural networks on the raw frequencies, or similarity measures, we create an ensemble out of many features of a Tweet. By using the information provided by other information extraction methods such as sentiment analysis, our learning models will potentially be able to yield better results and handle more robust instances of Tweets. This project has the additional utility of being able to be integrated into other supervised learning models that require further dimensions and information about raw Tweets. The generated mapping from Tweet content to hashtag could also be used as the basis for a hashtag recommendation system for Twitter.
 
-Authors from countries in which access to word-processing systems is
-limited should contact the publication chairs, Alexander Koller
-(\texttt{koller@ling.uni-potsdam.de}) and Yusuke Miyao
-(\texttt{yusuke@nii.ac.jp}), as soon as possible.
+\section{Previous Work}
 
-We will make more detailed instructions available at
-\url{http://sites.google.com/site/acl2014publication}. Please check
-this website regularly.
+We first surveyed recent literature and research into analyzing Twitter data to see get an idea of what has already been done. Sections 2.1 to 2.3 provide a brief of overview of 3 papers which significantly influenced and motivated our project. Section 2.4 outlines the new ideas and goals behind our work.
 
+\subsection{Lee, Palsetia, Narayanan, Patwary, Agarwal, Choudhary}
 
-\section{General Instructions}
+The basis for Lee et. al. and its motivation is related to Twitter's Trending Topics product, which appears at the stream homepage for users. Most of the time, it is hard to classify or understand what these topics are really about, so the authors set out to classify these topics into 18 different general categories. Lee et al. [1] used two different approaches to solve this problem, including the Bag-of-Words model as well as a network-based classification. In order to come up with the labels initially used for training, they used up to 3 human annotators, with the third being used in the event that the first two did not agree on a category. Focusing on the Bag-of-Words model, the paper constructed word vectors from the trending topic definitions and related Tweets and used tf-idf weighting with a multinomial Naive Bayes classifier to classify topics that appeared. We plan on using some of these same techniques in our implementation of the topic classifier.
 
-Manuscripts must be in two-column format.  Exceptions to the
-two-column format include the title, authors' names and complete
-addresses, which must be centered at the top of the first page, and
-any full-width figures or tables (see the guidelines in
-Subsection~\ref{ssec:first}). {\bf Type single-spaced.}  Start all
-pages directly under the top margin. See the guidelines later
-regarding formatting the first page.  The manuscript should be
-printed single-sided and its length
-should not exceed the maximum page limit described in Section~\ref{sec:length}.
-Do not number the pages.
+\subsection{Ramage, Dumais, Liebling}
 
+Ramage et. al [2] also discuss two different features that Twitter and it's users would find useful: the process of user and figure discovery, as well as feed filtering based on one’s interests. Their work revolves around the use of a partially supervised learning model, Labeled LDA, in order to process the multi-labeled fields in Twitter data and separate it into different dimensions. The concept of labeling each document, or Tweet in this case, by a specific set of topics helps to characterize and better understand the following and reading behaviors of its users. The four main behavior classes that the paper considers are substance, status, style, and a social context to each Tweet, with data that does not fall into one of these categories being separated. Some interesting observations in specific were that certain Twitter features such as mentions, hashtagging, emoticons, replies, retweets, and favorites all were related to specific behavioral characteristics. Our project would help augment this approach by coming up with a way to label Twitter stream data, as well as potentially take away from their conclusions in our own topic classification.
 
-\subsection{Electronically-available resources}
+\subsection{Li, Ritter, Cardie, Hovy}
 
-We strongly prefer that you prepare your PDF files using \LaTeX\ with
-the official ACL 2014 style file (acl2014.sty) and bibliography style
-(acl.bst). These files are available at
-\url{http://www.cs.jhu.edu/ACL2014/}. You will also find the document
-you are currently reading (acl2014.pdf) and its \LaTeX\ source code
-(acl2014.tex) on this website.
+The process of extracting events and classifying them based on Tweets by Li et. al. [3] can be broken down into three separate areas of work including user-level analysis, identification and extraction of public events, and learning from these areas to acquire more data. The paper proposes a pipeline by which these different areas come together to be able to classify a user’s Tweets into specific life events. Their process first takes a noisy input stream of user Tweets, and attempts to divide them up into different categories of major life events (many are not seen or captured). In order to better recognize when a major life event is captured in a Tweet, they leverage Tweet replies to determine when congratulations or condolences were being exchanged. Next, Li et al. took these different categories and trained a classifier that would use words in the Tweet, named entity tags, and the top words associated with each pre-determined category to determine which life-event (if any) it belonged to. Different signals such as the sentiment of a Tweet as described by Li et. al. can prove to be very useful, a strategy we plan on employing rather than using simply the raw text for training.
 
-You can alternatively use Microsoft Word to produce your PDF file. In
-this case, we strongly recommend the use of the Word template file
-(acl2014.dot) on the ACL 2014 website. If you have an option, we
-recommend that you use the \LaTeX2e version. If you will be
-  using the Microsoft Word template, we suggest that you anonymize
-  your source file so that the pdf produced does not retain your
-  identity.  This can be done by removing any personal information
-from your source document properties.
+\subsection{Motivation and Goal for our Work}
 
+Among a large number of the papers we reviewed, we found a consistent trend in that each group applied different approaches to the same problem. The majority of papers begin with a first attempt to solve the problem based purely on an information retrieval-esque language model such as n-gram likelihoods, Bag-of-Words representations, or similarity measures. These often came to the conclusion that many aspects or features in the data were being largely unused, or could not be feasibly used. The next attempts to make sense of the data involved supervised learning in the form of a neural network, or trying to uncover relationships between features using methods such as SVM. Some papers recognize the benefits of using each of these techniques, and create ensembles of different signals and successful methods in order to improve upon their accuracy.
 
+The goal of our project is to create a simple Tweet classification system that predicts the topic of Tweet given its text content. We aim to model Twitter data using various natural language understanding (NLU) techniques similar to those covered above and also methods discussed in CS 224U.  One of the overarching takeaways from the previous work is that ensemble systems usually yield improved performance over standalone models and learning algorithms. Previous ensemble algorithms, however, seem to use only models that are all specific to one general area of NLU, such as focusing on word representations or semantic parsing. Our system uses models based off of different areas of NLU, and in Section 5.2, we implement a new, data-driven ensemble algorithm that attempts to yield the best performance.
 
-\subsection{Format of Electronic Manuscript}
-\label{sect:pdf}
+\section{Data Collection and Preprocessing}
 
-For the production of the electronic manuscript you must use Adobe's
-Portable Document Format (PDF). PDF files are usually produced from
-\LaTeX\ using the \textit{pdflatex} command. If your version of
-\LaTeX\ produces Postscript files, you can convert these into PDF
-using \textit{ps2pdf} or \textit{dvipdf}. On Windows, you can also use
-Adobe Distiller to generate PDF.
+We begin by discussing our data collection in Section 3.1, and in Section 3.2, we describe our methodology for cleaning and preparing the dataset of Tweets.
 
-Please make sure that your PDF file includes all the necessary fonts
-(especially tree diagrams, symbols, and fonts with Asian
-characters). When you print or create the PDF file, there is usually
-an option in your printer setup to include none, all or just
-non-standard fonts.  Please make sure that you select the option of
-including ALL the fonts. \textbf{Before sending it, test your PDF by
-  printing it from a computer different from the one where it was
-  created.} Moreover, some word processors may generate very large PDF
-files, where each page is rendered as an image. Such images may
-reproduce poorly. In this case, try alternative ways to obtain the
-PDF. One way on some systems is to install a driver for a postscript
-printer, send your document to the printer specifying ``Output to a
-file'', then convert the file to PDF.
+\subsection{Data Collection}
+Twitter contains a wealth of data on an extremely diverse set of topics, and it has been often been used as a primary source of data for natural language understanding and machine learning research. Twitter, as a company, has also enabled open access to their data through company-supported APIs. As such, Twitter data is relatively easy to find and many sources of high quality Twitter data have been made available online. Our data set, provided by (TODO) STANFORDGROUPHERE, contains approximately 8 gigabytes of documents containing Tweet content and metadata. The data is divided into 27 groups based on the presence of certain hashtags.\footnote{The complete list of groups (with the \# symbol removed) is: \texttt{android}, \texttt{basic}, \texttt{coffee}, \texttt{dontjudgeme}, \texttt{earthquake}, \texttt{egypt}, \texttt{election}, \texttt{freedom}, \texttt{god}, \texttt{haiti}, \texttt{happy}, \texttt{harrypotter}, \texttt{healthcare}, \texttt{immigration}, \texttt{indonesia}, \texttt{ipod}, \texttt{love}, \texttt{mubarak}, \texttt{obama}, \texttt{obamacare}, \texttt{question}, \texttt{sotu}, \texttt{teaparty}, \texttt{tsunami}, \texttt{usa}, \texttt{win}, \texttt{wiunion}.} The overall choice of groups provides a nice amount of variation in content. For our system, we used the identifying hashtag as the topic label.
 
-It is of utmost importance to specify the \textbf{A4 format} (21 cm
-x 29.7 cm) when formatting the paper. When working with
-{\tt dvips}, for instance, one should specify {\tt -t a4}.
+Given the scope of our project and the hardware available to us, we chose to look primarily at a smaller portion of the data containing 6,000 Tweets from each of the 27 topic groups. This yields a total of 162,000 total Tweets. This smaller subset of the raw data allowed us to work more flexibly and efficiently. To verify the appropriateness of our partition size, we initially generated some of our intermediate results on larger subsets of the entire dataset. The results were sufficiently close enough to indicate that our primary working set was indeed large enough to capture the bulk of language-based variance among the Tweets. From this point on in our paper, any mention of the ``dataset'' are referencing this subset.
 
-Print-outs of the PDF file on A4 paper should be identical to the
-hardcopy version. If you cannot meet the above requirements about the
-production of your electronic submission, please contact the
-publication chairs as soon as possible.
+\subsection{Tweet Tokenization}
+The vast majority of content on Twitter is generated by users, and often times, Tweets do not follow formal language conventions. As a result, it is a common occurrence for Tweets to contain words or tokens that are not normally considered to be standard forms of language. Developing a system to accurately parse and extract informative tokens from ``noisy'' Tweets thus becomes integral to extracting a suitable language corpus and can have a significant impact on the performance of language based analysis of Twitter data.
 
+Our system for the tokenization of Tweets draws heavily from the Twitter preprocessing methods laid out by Pennington et al. in [4]. Several non-standard language tokens which are commonly found in Tweets are filtered or modified during the tokenization process. The first of these are the hashtags themselves; formally, these are tokens which containing a phrase that is preceded by a “\#” symbol, such as ``\#win''. For the purposes of our classification system, hashtags are removed from the Tweet body during preprocessing. This is done because our topic groups are divided based on the presence of certain hashtags, as described in Section 3.1.  Our system also modifies emotion faces (emoticons) such as ``:)'' and encodes them with unique identifier tags. Furthermore, words typed out using only capital letters, such as ``NEWS'', and words spelled using unnecessary repeated instances of letters, such as ``heyyyyy'', are labeled using similar tags. Finally, all numerical values are also replaced with a numerical value tag, although URLs and references to other Twitter users (handles, which are denoted by the @ symbol) are left as they appear in the original Tweet. Finally, standard punctuation symbols such as periods and exclamation points are pruned from the Tweet context.
 
-\subsection{Layout}
-\label{ssec:layout}
+Following the initial processing of the Tweet body, a list of tokens is then obtained by simply splitting the Tweet on whitespace. The flexibility of this tokenization method allows for a high level of context information extraction even from Tweets containing a large amount of unorthodox language. For example, (TODO) NICE EXAMPLE.
 
-Format manuscripts two columns to a page, in the manner these
-instructions are formatted. The exact dimensions for a page on A4
-paper are:
+\section{Learning Models and Features}
 
-\begin{itemize}
-\item Left and right margins: 2.5 cm
-\item Top margin: 2.5 cm
-\item Bottom margin: 2.5 cm
-\item Column width: 7.7 cm
-\item Column height: 24.7 cm
-\item Gap between columns: 0.6 cm
-\end{itemize}
+We now discuss the technical details of the models and features used in the implementation of our system. Our project was primarily coded in Python with the assistance of the popular open source \texttt{scikit-learn} module. In Section 4.1, we discuss the construction of our Word-Tweet matrix, a data structure analogous to a general word-document matrix. In Sections 4.2 to 4.6, we discuss our various approaches to modeling Tweets in our data set.
 
-\noindent Papers should not be submitted on any other paper size.
- If you cannot meet the above requirements about the production of your electronic submission, please contact the publication chairs above as soon as possible.
+\subsection{Word-Tweet Matrix}
 
+The first step in our Tweet analysis procedure is the construction of a Word-Tweet matrix. In order to construct such a matrix, the Tweet tokenization process described in Section 3.2 was first applied to all Tweets contained in the dataset. Then, we counted the number of times each unique word token appeared in our dataset. We chose to remove all tokens that did not appear at least 50 times, since rare words are not likely to be helpful in generating accurate models. The remaining frequently-occurring tokens are then placed into a term set and each token is assigned a unique id. A term frequency vector $t$ of a Tweet is then defined to be a vector containing a feature for each of the terms or tokens in the frequently occurring term set. The $i$th element of the vector, $t_i$, is equivalent to the number of times the term with id $i$ appears in the Tweet.
 
-\subsection{Fonts}
+The Word-Tweet matrix is then constructed such that the term frequency vector of each Tweet in the dataset is stored as a column in the matrix. This is done using a second pass over the dataset whereby the term frequency vectors of each Tweet are calculated and stored. Any Tweets which have over 50\% of their tokens not appearing in the generated term set are not placed into the Word-Tweet matrix as these Tweets have had a significant amount of their content stripped and thus cannot be classified meaningfully. The Word-Tweet matrix is a very useful data structure that provided the basis for our various models, such as raw term frequency vectors and term frequency-inverse document frequency (tf-idf) vectors.
 
-For reasons of uniformity, Adobe's {\bf Times Roman} font should be
-used. In \LaTeX2e{} this is accomplished by putting
+\subsection{Raw Term Frequency Vectors}
 
-\begin{quote}
-\begin{verbatim}
-\usepackage{times}
-\usepackage{latexsym}
-\end{verbatim}
-\end{quote}
-in the preamble. If Times Roman is unavailable, use {\bf Computer
-  Modern Roman} (\LaTeX2e{}'s default).  Note that the latter is about
-  10\% less dense than Adobe's Times Roman font.
+The first classification component we used revolved around the construction of several simple classifiers that classified directly on a bag of words language model in which the feature vector of each Tweet simply contained the counts of the tokens appearing in the Tweet. Term frequency vectors for each Tweet were obtained by normalizing the columns of the Word-Tweet matrix generated using Section 4.1. These frequency vectors were then mapped to their associated hashtag and input as data points for the classification training of our models. Using the raw term frequency vector model as a backbone, we focused on three classification algorithms: logistic regression, k-nearest neighbors, and a 3-layer nerual network.
 
+\subsection{Term Frequency-Inverse Document Frequency Vectors}
+
+Another possible method for accurately classifying Tweet hashtags involves first constructing term frequency-inverse document frequency or tf-idf based word vectors that encode information about the similarities and differences between different tokens in the corpus. In the tf-idf word vector model, the idf of a token $t$ is given by the formula:
+\[
+idf(t) = \log \left( \frac{ \text{\# of total documents}}{ \text{\# of documents containing }t } \right)
+\]
+The tf-idf value for a token $t$ and a Tweet $d$ is defined as:
+\[
+tf-idf(t, d) = tf(t, d) \times idf(t)
+\]
+Here $tf(t,d)$ represents the number of occurences of $t$ in the Tweet $d$. Calculating the tf-idf scores for each of the token-Tweet pairs in the dataset allows us to
+The tf of the same token $t$ is given by the number of occurences of $t$ in a given Tweet $d$. The tf-idf value for a
+Once such vectors have been constructed, Tweets can be represented as a combination of the word vectors for the tokens contained in the Tweet. The Word-Tweet matrix constructed in Section 4.1 allows for straightforward computation of tf-idf based word vectors. Vector representations of Tweets are then constructed by fidning the mean of the word vectors of each word appearing in the Tweet. The resulting vector representations are then used for classification.
+
+\subsection{Feature Vectors Derived from GloVe Word Representations}
+
+Another approach we tested was building feature vectors for each Tweet by leveraging GloVe word representations. The constructed Word-Tweet matrix allows us to quickly extract the most significant words and their frequencies from each Tweet, and most of these words have a corresponding GloVe vector representation. Then, to build a feature vector for a particular Tweet, we tried many different approaches to “combine” the GloVe vectors of the significant words in that Tweet. The most straightforward approach was to add all of the vectors of the words together (weighted by the word’s frequency in that Tweet), and then average the resulting vector sum.
+
+\subsection{Sentiment Learning and Scoring}
+
+One signal that involves information extraction and additional training on a separate Tweet dataset is sentiment. The predicted sentiment of a particular Tweet could potentially be very useful for identifying the class of certain topics in our dataset by providing a signal that could have its weight in the classification determined by each learning model. For example the “win” topic should have a very strong correlation towards positive sentiment, and the “tsunami” topic should be very negative in general.
+
+In order to extract this information to be input when operating on our test dataset, we first trained a sentiment scorer on the Sentiment140 Twitter in order to provide a classification of the sentiment on our topic dataset. This was done by creating a tf-idf feature vector as before on the training data and using the sentiment score labels as the target, and using this learned model to create a pipelined process that generates a sentiment label when training and testing on the topic dataset. The initial training resulted in a test accuracy of 0.712 using logistic regression, and up to 0.739 when using a neural network, which was high enough for us to incorporate into our topic classification model as a training signal.
 
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|l|rl|}
-\hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
-paper title & 15 pt & bold \\
-author names & 12 pt & bold \\
-author affiliation & 12 pt & \\
-the word ``Abstract'' & 12 pt & bold \\
-section titles & 12 pt & bold \\
-document text & 11 pt  &\\
-captions & 11 pt & \\
-abstract text & 10 pt & \\
-bibliography & 10 pt & \\
-footnotes & 9 pt & \\
+\begin{tabular}{|l|c|}
+\hline \bf Model & \bf Precision \\ \hline
+Baseline (Guessing) & 0.5 \\
+Logistic Regression & 0.712 \\
+3-Layer NN & 0.739 \\
+kNN - Minkowski & 0.672 \\
 \hline
 \end{tabular}
 \end{center}
-\caption{\label{font-table} Font guide. }
+\label{table:sentiment}
+\caption{Sentiment classification accuracy.}
 \end{table}
 
-\subsection{The First Page}
-\label{ssec:first}
+This semi-supervised strategy might incorrectly label certain Tweets’ sentiment, but our hope was that for the much larger proportion of Tweets the labeling would be accurate, and create a useful signal for our model to learn. This resulted in an overall test accuracy on the topic dataset of 0.
 
-Center the title, author's name(s) and affiliation(s) across both
-columns. Do not use footnotes for affiliations. Do not include the
-paper ID number assigned during the submission process. Use the
-two-column format only when you begin the abstract.
+\subsection{OpenIE KnowItAll Relation Extraction and Weighting}
 
-{\bf Title}: Place the title centered at the top of the first page, in
-a 15-point bold font. (For a complete guide to font sizes and styles,
-see Table~\ref{font-table}) Long titles should be typed on two lines
-without a blank line intervening. Approximately, put the title at 2.5
-cm from the top of the page, followed by a blank line, then the
-author's names(s), and the affiliation on the following line. Do not
-use only initials for given names (middle initials are allowed). Do
-not format surnames in all capitals (e.g., use ``Schlangen'' not
-``SCHLANGEN'').  Do not format title and section headings in all
-capitals as well except for proper names (such as ``BLEU'') that are
-conventionally in all capitals.  The affiliation should contain the
-author's complete address, and if possible, an electronic mail
-address. Start the body of the first page 7.5 cm from the top of the
-page.
+KnowItAll is a information extraction open-source tool that takes a sentence and breaks it up into relational clauses. We saw this as a potentially useful addition to our learning models, which would help to differentiate between the importance of specific words in the Tweet, or allow us to exploit the relationship between words. Each n-ary extraction will put emphases on certain words or phrases within the Tweet, allowing us to come up with an intuitive weighting scheme that promotes words in our respective word vector representations. For example take the text “The U.S. president Barack Obama gave his speech on Tuesday to thousands of people.” The system will create the relation (Barack Obama, is the president of, the US) among others, allowing us to use this information and potentially weight the subject and relational terms more than the rest of the phrase.\\ \\
+Rather than creating a new feature for each of these different relations, we chose to weight the word representations instead based on the most likely relation as outputted by KnowItAll. This decision helps eliminate the problem of having extremely sparse training and test data in our feature vectors as well as allow for human intuition to play a role in determining what relations could potentially be important.
 
-The title, author names and addresses should be completely identical
-to those entered to the electronical paper submission website in order
-to maintain the consistency of author information among all
-publications of the conference. If they are different, the publication
-chairs may resolve the difference without consulting with you; so it
-is in your own interest to double-check that the information is
-consistent.
+\section{Learning Algorithms and Results}
 
-{\bf Abstract}: Type the abstract at the beginning of the first
-column. The width of the abstract text should be smaller than the
-width of the columns for the text in the body of the paper by about
-0.6 cm on each side. Center the word {\bf Abstract} in a 12 point bold
-font above the body of the abstract. The abstract should be a concise
-summary of the general thesis and conclusions of the paper. It should
-be no longer than 200 words. The abstract text should be in 10 point font.
+We now discuss the results yielded by training different learning algorithms on our various models. Individual model results and analysis are given in Section 5.1, while Section 5.2 discusses our overall ensemble system.
 
-{\bf Text}: Begin typing the main body of the text immediately after
-the abstract, observing the two-column format as shown in
-the present document. Do not include page numbers.
+\subsection{Individual Model Results}
 
-{\bf Indent} when starting a new paragraph. Use 11 points for text and
-subsection headings, 12 points for section headings and 15 points for
-the title.
+As discussed in Section 4, we modeled our data set using a variety of different approaches: raw term frequency vectors (which we will refer to as \textsc{Freq}), raw tf-idf vectors (\textsc{Tfidf}), feature vectors derived from GloVe word representations (\textsc{Glove}), tf-idf vectors with an additional sentiment scoring feature (\textsc{Sent}), and tf-idf vectors based off of relation extraction weighting (\textsc{Rel}).
 
-\subsection{Sections}
+We trained on each of these models using three common learning algorithms: logistic regression, $k$-nearest neighbors classifier using Minkowski distance, and a 3-layer shallow neural network. The neural network implementation was adapted from the CS 224U \texttt{distributedwordreps} code lab. For testing data, we used approximately 500 additional Tweets from each topic group that were not included in the original subset based on 6000 from each group. Each classifier outputted the predicted topic label for each Tweet in the test data set, and test accuracy was measured by simply calculating the percentage of test Tweets that were correctly classified. Table~\ref{table:individual} summarizes the results.
 
-{\bf Headings}: Type and label section and subsection headings in the
-style shown on the present document.  Use numbered sections (Arabic
-numerals) in order to facilitate cross references. Number subsections
-with the section number and the subsection number separated by a dot,
-in Arabic numerals. Do not number subsubsections.
+% (TODO) Move this around to make the document look pretty, if necessary
+\begin{table*}[h]
+  \centering
+  \begin{tabular}{|c||c|c|c|c|c|}
+  \hline \textbf{Model} & \textsc{Freq} & \textsc{Tfidf} & \textsc{Glove} & \textsc{Sent} & \textsc{Rel} \\ \hline \hline
+  Logistic Regression & 0.58507  & 0.61264  & 0.48970 & 0.56820 & 0.58764 \\ \hline
+  3-Layer Neural Net. & x & x & x & x & x \\ \hline
+  $k$NN - Minkowski  & x & x & x & x & x \\ \hline
+  \end{tabular}
+  \label{table:individual}
+  \caption{Classification Accuracy for Individual Models}
+\end{table*}
 
-{\bf Citations}: Citations within the text appear in parentheses
-as~\cite{Gusfield:97} or, if the author's name appears in the text
-itself, as Gusfield~\shortcite{Gusfield:97}.  Append lowercase letters
-to the year in cases of ambiguity.  Treat double authors as
-in~\cite{Aho:72}, but write as in~\cite{Chandra:81} when more than two
-authors are involved. Collapse multiple citations as
-in~\cite{Gusfield:97,Aho:72}. Also refrain from using full citations
-as sentence constituents. We suggest that instead of
-\begin{quote}
-  ``\cite{Gusfield:97} showed that ...''
-\end{quote}
-you use
-\begin{quote}
-``Gusfield \shortcite{Gusfield:97}   showed that ...''
-\end{quote}
+(TODO) Analysis. What do we see. Error analysis. Why do things like sentiment and relation extraction not work too well individually? Give examples of where sentiment and relation extraction fail. Give examples of Tweets in general that were difficult to classify. GloVe vectors not too strong.
 
-If you are using the provided \LaTeX{} and Bib\TeX{} style files, you
-can use the command \verb|\newcite| to get ``author (year)'' citations.
+\subsection{Ensemble Model}
 
-As reviewing will be double-blind, the submitted version of the papers
-should not include the authors' names and affiliations. Furthermore,
-self-references that reveal the author's identity, e.g.,
-\begin{quote}
-``We previously showed \cite{Gusfield:97} ...''
-\end{quote}
-should be avoided. Instead, use citations such as
-\begin{quote}
-``Gusfield \shortcite{Gusfield:97}
-previously showed ... ''
-\end{quote}
+As mentioned in Section 2.4, previous literature suggests that ensemble systems can potentially improve performance. After analyzing the strengths and weaknesses of each model in Section 5.1, we predicted that an ensemble system which incorporated different areas of NLU could potentially work very well. Since the models described above use some very different features, the strengths of each could make up for other models' weaknesses.
 
-\textbf{Please do not use anonymous citations} and do not include
-acknowledgements when submitting your papers. Papers that do not
-conform to these requirements may be rejected without review.
+To start our implementation, we focused on the logistic regression output of each model. Logistic regression outputs a probability score for each possible candidate label, and the predicted classification (when standalone) is simply the label with the highest probability score. Our ensemble system aggregates the probability scores of all candidate topics for each Tweet. We used a data-driven approach to find the best set of weights possible; our algorithm methodically tests various combinations of weights on each model to find the set that provides the best performance. Thus, the aggregation is a sum of weighted probability scores. For Tweet $t$, let \textsc{Model}$(t)$ denote the probability scores given by training logistic regression on \textsc{Model} and predicting the label for $t$.
 
-\textbf{References}: Gather the full set of references together under
-the heading {\bf References}; place the section before any Appendices,
-unless they contain references. Arrange the references alphabetically
-by first author, rather than by order of occurrence in the text.
-Provide as complete a citation as possible, using a consistent format,
-such as the one for {\em Computational Linguistics\/} or the one in the
-{\em Publication Manual of the American
-Psychological Association\/}~\cite{APA:83}.  Use of full names for
-authors rather than initials is preferred.  A list of abbreviations
-for common computer science journals can be found in the ACM
-{\em Computing Reviews\/}~\cite{ACM:83}.
+\begin{align}
+\textsc{Ensemble}(t) =\ &\alpha \times \textsc{Freq}(t) +\\
+&\beta \times \textsc{Tfidf}(t) +\\
+&\gamma \times \textsc{Glove}(t) +\\
+&\delta \times \textsc{Sent}(t) +\\
+&\epsilon \times \textsc{Rel}(t)
+\end{align}
 
-The \LaTeX{} and Bib\TeX{} style files provided roughly fit the
-American Psychological Association format, allowing regular citations,
-short citations and multiple citations as described above.
+\begin{algorithm*}
+  \caption{Ensemble system.}\label{ntc}
+  \begin{algorithmic}[1]
+    \State $\alpha, \beta, \gamma, \delta, \epsilon \gets 0$
+    \For{\textbf{all }Tweets $t$}
+      \State Compute \textsc{Freq}$(t)$, \textsc{Tfidf}$(t)$, \textsc{Glove}$(t)$, \textsc{Sent}$(t)$, and \textsc{Rel}$(t)$
+    \EndFor
+    \For{\textbf{all }$\alpha$ from $0$ to $1$, every time increment by $0.2$}
+      \For{\textbf{all }$\beta$ from $0$ to $1$, every time increment by $0.2$}
+        \For{\textbf{all }$\gamma$ from $0$ to $1$, every time increment by $0.2$}
+          \For{\textbf{all }$\delta$ from $0$ to $1$, every time increment by $0.2$}
+            \For{\textbf{all }$\epsilon$ from $0$ to $1$, every time increment by $0.2$}
+              \State Compute \textsc{Ensemble}$(t)$ for all Tweets $t$
+              \State Evaluate classification accuracy of $(\alpha,\beta,\gamma,\delta,\epsilon)$
+            \EndFor
+          \EndFor
+        \EndFor
+      \EndFor
+    \EndFor\\
+    \Return Best $(\alpha,\beta,\gamma,\delta,\epsilon)$
+  \end{algorithmic}
+\end{algorithm*}
 
-{\bf Appendices}: Appendices, if any, directly follow the text and the
-references (but see above).  Letter them in sequence and provide an
-informative title: {\bf Appendix A. Title of Appendix}.
+\section{Conclusion}
 
-\subsection{Footnotes}
+(TODO) Conclusion
 
-{\bf Footnotes}: Put footnotes at the bottom of the page and use 9
-points text. They may be numbered or referred to by asterisks or other
-symbols.\footnote{This is how a footnote should appear.} Footnotes
-should be separated from the text by a line.\footnote{Note the line
-separating the footnotes from the text.}
+\subsection{Future Work}
 
-\subsection{Graphics}
-
-{\bf Illustrations}: Place figures, tables, and photographs in the
-paper near where they are first discussed, rather than at the end, if
-possible.  Wide illustrations may run across both columns.  Color
-illustrations are discouraged, unless you have verified that
-they will be understandable when printed in black ink.
-
-{\bf Captions}: Provide a caption for every illustration; number each one
-sequentially in the form:  ``Figure 1. Caption of the Figure.'' ``Table 1.
-Caption of the Table.''  Type the captions of the figures and
-tables below the body, using 11 point text.
-
-
-\section{XML conversion and supported \LaTeX\ packages}
-
-ACL 2014 innovates over earlier years in that we will attempt to
-automatically convert your \LaTeX\ source files to machine-readable
-XML with semantic markup. This will facilitate future research that
-uses the ACL proceedings themselves as a corpus.
-
-We encourage you to submit a ZIP file of your \LaTeX\ sources along
-with the camera-ready version of your paper. We will then convert them
-to XML automatically, using the LaTeXML tool
-(\url{http://dlmf.nist.gov/LaTeXML}). LaTeXML has \emph{bindings} for
-a number of \LaTeX\ packages, including the ACL 2014 stylefile. These
-bindings allow LaTeXML to render the commands from these packages
-correctly in XML. For best results, we encourage you to use the
-packages that are officially supported by LaTeXML, listed at
-\url{http://dlmf.nist.gov/LaTeXML/manual/included.bindings}
-
-
-
-
-
-\section{Translation of non-English Terms}
-
-It is also advised to supplement non-English characters and terms
-with appropriate transliterations and/or translations
-since not all readers understand all such characters and terms.
-Inline transliteration or translation can be represented in
-the order of: original-form transliteration ``translation''.
-
-\section{Length of Submission}
-\label{sec:length}
-
-Long papers may consist of up to 9 pages of content, plus two extra
-pages for references. Short papers may consist of up to 5 pages of
-content, plus two extra pages for references.  Papers that do not
-conform to the specified length and formatting requirements may be
-rejected without review.
-
-
-
-\section*{Acknowledgments}
-
-The acknowledgments should go immediately before the references.  Do
-not number the acknowledgments section. Do not include this section
-when submitting your paper for review.
+(TODO) Future Work. Different ways to incorporate sentiment analysis and relation extraction. Larger data set. Different topics (ones that work better or worse with sentiment analysis). Hashtag recommendation system.
 
 % include your own bib file like this:
 %\bibliographystyle{acl}
 %\bibliography{acl2014}
 
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
 
-\bibitem[\protect\citename{Aho and Ullman}1972]{Aho:72}
-Alfred~V. Aho and Jeffrey~D. Ullman.
-\newblock 1972.
-\newblock {\em The Theory of Parsing, Translation and Compiling}, volume~1.
-\newblock Prentice-{Hall}, Englewood Cliffs, NJ.
+\bibitem{1} [1] K. Lee, D. Palsetia, R. Narayanan, M. Patwary, A. Agrawal, A. Choudhary. Twitter Trending Topic Classification. IEEE, 2011.
 
-\bibitem[\protect\citename{{American Psychological Association}}1983]{APA:83}
-{American Psychological Association}.
-\newblock 1983.
-\newblock {\em Publications Manual}.
-\newblock American Psychological Association, Washington, DC.
+\bibitem{2} [2] D. Ramage, S. Dumais, D. Liebling. Characterizing Microblogs with Topic Models. AAAI, 2010.
 
-\bibitem[\protect\citename{{Association for Computing Machinery}}1983]{ACM:83}
-{Association for Computing Machinery}.
-\newblock 1983.
-\newblock {\em Computing Reviews}, 24(11):503--512.
+\bibitem{3} [3] J. Li, A. Ritter, C. Cardie, and E. Hovy. Major Life Event Extraction from Twitter Based on Congratulations/Condolences Speech Acts. EMNLP, 2014.
 
-\bibitem[\protect\citename{Chandra \bgroup et al.\egroup }1981]{Chandra:81}
-Ashok~K. Chandra, Dexter~C. Kozen, and Larry~J. Stockmeyer.
-\newblock 1981.
-\newblock Alternation.
-\newblock {\em Journal of the Association for Computing Machinery},
-  28(1):114--133.
-
-\bibitem[\protect\citename{Gusfield}1997]{Gusfield:97}
-Dan Gusfield.
-\newblock 1997.
-\newblock {\em Algorithms on Strings, Trees and Sequences}.
-\newblock Cambridge University Press, Cambridge, UK.
+\bibitem{4} [4] J. Pennington, R. Socher, C. Manning. GloVe: Global Vectors for Word Representation. EMNLP, 2014.
 
 \end{thebibliography}
 

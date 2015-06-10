@@ -7,7 +7,7 @@ from sklearn import linear_model
 from sklearn import neighbors
 from sklearn import preprocessing
 
-SUFFIX = 'micro'
+SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % (SUFFIX, SUFFIX)
 
@@ -66,7 +66,7 @@ print 'Building GLOVE...'
 #GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
 GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
 
-print neighbors(word='niggas', mat=GLOVE_MAT, rownames=GLOVE_VOCAB)[: 5]
+#print neighbors(word='niggas', mat=GLOVE_MAT, rownames=GLOVE_VOCAB)[: 5]
 
 def glvvec(w):
     """Return the GloVe vector for w."""
