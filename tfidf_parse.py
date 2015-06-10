@@ -125,9 +125,9 @@ def tfidf_shallownn(train_file):
     return snn.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):,:])
 
 if __name__ == "__main__":
-    score_shallownn = tfidf_shallownn(TRAIN_FILE)
-    print 'ShallowNN:', score_shallownn
-    score_knn = tfidf_knn(TRAIN_FILE)
-    print 'KNN:', score_knn
+    # score_shallownn = tfidf_shallownn(TRAIN_FILE)
+    # print 'ShallowNN:', score_shallownn
+    # score_knn = tfidf_knn(TRAIN_FILE)
+    # print 'KNN:', score_knn
     score_logreg = tfidf_logreg(TRAIN_FILE)
     print 'LogReg: ', score_logreg
