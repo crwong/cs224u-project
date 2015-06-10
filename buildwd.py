@@ -15,6 +15,10 @@ def buildWords(file_name):
     rownames = []
     numTweets = 0
     f = open(file_name)
+    if "_tiny" in file_name or "_micro" in file_name:
+        thresh = 10
+    else:
+        thresh = 50
     row = 0
     for line in f:
         numTweets += 1
@@ -22,7 +26,7 @@ def buildWords(file_name):
         tweet = buildTweet(words[2:])
         for word in tweetprocess.tokenize(tweet):
             wordCountDict[word] = wordCountDict[word] + 1
-            if wordCountDict[word] > 10 and word not in wordRowDict:
+            if wordCountDict[word] > thresh and word not in wordRowDict:
                 rownames.append(word)
                 wordRowDict[word] = row
                 row += 1
