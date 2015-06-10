@@ -1,7 +1,10 @@
 import numpy as np
 from collections import defaultdict
+import sentiment_bagged as sent
 import random
 import tweetprocess
+
+SENTIMENT_FILENAME = 'data/sentiment/training.1600000.processed.noemoticon.csv'
 
 def processWord(word):
     return (word.translate(None, '!.?!,\"\'\\')).lower()
@@ -33,7 +36,6 @@ def buildWords(file_name):
     f.close()
     i = 0
     for word in wordRowDict:
-        print word
         if i == 15:
             break
         i += 1
@@ -52,7 +54,6 @@ def writeToCSV(mat, colnames, wordRowDict, file_name):
             toWrite += ", "
     f.write(toWrite)
     for word in wordRowDict:
-        print word
         toWrite = word + ", "
         for j in range(len(colnames)):
             toWrite += str(mat[wordRowDict[word]][j])
@@ -76,23 +77,37 @@ rownames contains the words.
 subjects contains the correct subjects in the order of colnames.
 File should have a tweet on each line. Each line should contain id, subject, tweet.
 """
-def buildWD(file_name, writeCSV=False, randomize=False):
+def buildWD(file_name, writeCSV=False, randomize=False, sentiment=False):
     print "Building word dictionary"
     wordRowDict, numTweets, rownames = buildWords(file_name)
     print "Word dictionary finished"
-    mat = np.zeros((len(wordRowDict), numTweets))
+    extra_feats = 0
+    if sentiment: extra_feats = 1
+    mat = np.zeros((len(wordRowDict) + extra_feats, numTweets))
     colnames = []
     subjects = []
     print "Building word document matrix"
     f = open(file_name)
     matCol = 0
+    if (sentiment):
+        sentiment_model, sentiment_words = sent.tfidf_logreg(SENTIMENT_FILENAME)
+        sentimentTweetColumn = np.zeros(len(sentiment_words))
     for line in f:
         words = line.split()
         tweet = buildTweet(words[2:])
-        tweetColumn = np.zeros(len(wordRowDict))
+        tweetColumn = np.zeros(len(wordRowDict) + extra_feats)
+        num_words = 0
         for word in tweetprocess.tokenize(tweet):
             if word in wordRowDict:
                 tweetColumn[wordRowDict[word]] = tweetColumn[wordRowDict[word]] + 1
+            if sentiment and word in sentiment_words:
+                sentimentTweetColumn[sentiment_words.index(word)] += 1
+                num_words += 1
+        if (sentiment and num_words > 0):
+            sentimentTweetColumn *= 1.0 / num_words
+            tweetColumn[-1] = sentiment_model.predict(sentimentTweetColumn)
+        elif (sentiment):
+            tweetColumn[-1] = 2
         if np.sum(tweetColumn) > 0.5*(len(words)-2):
             colnames.append(words[0])
             subjects.append(words[1])

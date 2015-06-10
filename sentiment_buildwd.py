@@ -15,7 +15,7 @@ def buildWords(file_name):
     rownames = []
     numTweets = 0
     f = open(file_name)
-    thresh = 100
+    thresh = 5
     row = 0
     for line in f:
         numTweets += 1

@@ -12,9 +12,9 @@ def analyzeOutput():
   for line in infile:
     l = line.split(',')
     l = [float(n) for n in l]
-    if topScore < l[3]:
-      topScore = l[3]
-      weights = l[0:3]
+    if topScore < l[NUM_MODELS]:
+      topScore = l[NUM_MODELS]
+      weights = l[0:NUM_MODELS]
   infile.close()
   print topScore, weights
 

@@ -33,7 +33,7 @@ def tfidf_logreg(train_file):
 
     logreg = linear_model.LogisticRegression()
     logreg.fit(train[0:cutoff], labels[0:cutoff])
-    return logreg.score(train[cutoff:], labels[cutoff:])
+    return logreg, rownames
 
 
 if __name__ == "__main__":
