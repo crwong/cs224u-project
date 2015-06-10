@@ -4,7 +4,8 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-TRAIN_FILE = 'data/topics_tiny/ALL_tiny.txt'
+SUFFIX = 'micro'
+TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 
 def tfidf(mat=None, rownames=None):
     """TF-IDF on mat. rownames is unused; it's an argument only
