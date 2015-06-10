@@ -1,6 +1,7 @@
 import sentiment_buildwd
 import numpy as np
 import tweetprocess
+import random
 from sklearn import linear_model
 
 TRAIN_FILE = 'data/sentiment/training.1600000.processed.noemoticon.csv'
@@ -50,9 +51,22 @@ def tfidf_logreg(train_file):
 
     trainVals = sentiment_buildwd.trainValsFromSubjects(subjects)
 
+    # RANDOMIZE
+    random.seed(17)
+    shuffle = range(len(subjects))
+    random.shuffle(shuffle)
+    train = []
+    labels = []
+    index = 0
+    for i in shuffle:
+        train.append(trainMat[i])
+        labels.append(trainVals[i])
+        index += 1
+    cutoff = int(index*0.7)
+
     logreg = linear_model.LogisticRegression()
-    logreg.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
-    return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
+    logreg.fit(train[0:cutoff], labels[0:cutoff])
+    return logreg.score(train[cutoff:], labels[cutoff:])
 
 
 if __name__ == "__main__":

@@ -101,22 +101,7 @@ def buildWD(file_name, writeCSV=False):
         writeToCSV(mat, colnames, wordRowDict, "trainWords.csv")
         print "Finished writing to CSV"
 
-    # RANDOMIZE
-    random.seed(17)
-    shuffle = range(len(subjects))
-    random.shuffle(shuffle)
-    m = np.zeros(mat.shape)
-    c = []
-    s = []
-    index = 0
-    for i in shuffle:
-        m[:, index] = mat[:, i]
-        c.append(colnames[i])
-        s.append(subjects[i])
-        index += 1
-
-    return (m, c, rownames, s)
-    #return (mat, colnames, rownames, subjects)
+    return (mat, colnames, rownames, subjects)
 
 
 subjectToValue = ['0"', '4"']
