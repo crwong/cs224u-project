@@ -42,9 +42,9 @@ def tokenize(text):
     def re_sub(pattern, repl):
         return re.sub(pattern, repl, text, flags=FLAGS)
 
-    urls = re.findall("https?:\/\/\S+\b|www\.(\w+\.)+\S*", text)
-    print urls
+    urls = re.findall(r"https?:\/\/\S+\b|www\.", text)
     #text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
+    text = re_sub(r"https?:\/\/\S+\b|www\.", "<url>")
     #text = re_sub(r"/"," / ")
     text = re_sub(r"/","")
     #text = re_sub(r"@\w+", "<user>")
@@ -63,14 +63,22 @@ def tokenize(text):
     ## -- I just don't understand why the Ruby script adds <allcaps> to everything so I limited the selection.
     # text = re_sub(r"([^a-z0-9()<>'`\-]){2,}", allcaps)
     text = re_sub(r"([A-Z]){2,}", allcaps)
+
+    tokens = text.lower().split()
+    urlIndex = 0
+    for i in range(len(tokens)):
+        if tokens[i] == '<url>':
+            tokens[i] = urls[urlIndex]
+            urlIndex += 1
  
-    return text.lower().split()
+    return tokens
  
  
 if __name__ == '__main__':
     text = "test"
     if text == "test":
         #text = "I TEST alllll kinds of #hashtags and #HASHTAGS, @mentions and 3000 (http://t.co/dkfjkdf). w/ <3 :) haha!!!!!"
-        text = "on 1 Fav Source+5 others like CNET News-Why Google Android is winning http://bit.ly/aW9QWn"
+        #text = "on 1 Fav Source+5 others like CNET News-Why Google Android is winning http://bit.ly/aW9QWn"
+        text = "on 1 Fav Source+5 others like CNET News-Why Google Android is winning https://docs.python.org/2/library/re.html"
     tokens = tokenize(text)
     print tokens
