@@ -4,3 +4,6 @@
 # Compiler-generated files
 *.pyc
 
+# OpenIE
+openIE/*
+
