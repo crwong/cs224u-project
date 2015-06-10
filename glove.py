@@ -8,7 +8,7 @@ SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % ('small', 'small')
 
-GLVVEC_LENGTH = 100
+GLVVEC_LENGTH = 50
 
 GLOVE_CACHE = None
 
@@ -46,8 +46,8 @@ def parseA_GLOVE(filename):
     return mat, vocab
 
 print 'Building GLOVE...'
-GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
-# GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
+# GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
+GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
 
 def glvvec(w):
     """Return the GloVe vector for w."""

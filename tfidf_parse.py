@@ -5,7 +5,7 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-SUFFIX = 'tiny'
+SUFFIX = 'micro'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 
 def tfidf(mat=None, rownames=None):
@@ -25,7 +25,7 @@ def _tfidf_row_func(row, colsums, doccount):
     tfs = row/colsums
     return tfs * idf
 
-def tfidf_logreg(train_file):
+def get_tfidf_logreg(train_file):
     wd = buildwd.buildWD(train_file)
     colnames = wd[1]
     rownames = wd[2]
@@ -67,6 +67,11 @@ def tfidf_logreg(train_file):
 
     logreg = linear_model.LogisticRegression()
     logreg.fit(train[0:cutoff], labels[0:cutoff])
+    return logreg, train, labels, cutoff
+
+
+def tfidf_logreg(train_file):
+    logreg, train, labels, cutoff = get_tfidf_logreg(train_file)
     return logreg.score(train[cutoff:], labels[cutoff:])
 
 def tfidf_knn(train_file):
