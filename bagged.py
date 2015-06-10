@@ -11,7 +11,7 @@ def bag_logreg(train_file):
     return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
 
 def get_bag_logreg(train_file):
-    wd = buildwd.buildWD(train_file, randomize=True)
+    wd = buildwd.buildWD(train_file, randomize=True, sentiment=True)
     colnames = wd[1]
     subjects = wd[3]
 
