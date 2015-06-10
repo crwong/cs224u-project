@@ -3,7 +3,8 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-TRAIN_FILE = 'data/topics_small/ALL_small.txt'
+SUFFIX = 'small'
+TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 
 def bag_logreg(train_file):
     logreg, trainMat, trainVals = get_bag_logreg(train_file)

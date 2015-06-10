@@ -1,5 +1,6 @@
 import numpy as np
 from collections import defaultdict
+import random
 
 def processWord(word):
     return (word.translate(None, '!.?!,\"\'\\')).lower()
@@ -85,7 +86,22 @@ def buildWD(file_name, writeCSV=False):
         print "Writing to CSV"
         writeToCSV(mat, colnames, wordRowDict, "trainWords.csv")
         print "Finished writing to CSV"
-    return (mat, colnames, rownames, subjects)
+
+    # RANDOMIZE
+    shuffle = range(len(subjects))
+    random.shuffle(shuffle)
+    m = np.zeros(mat.shape)
+    c = []
+    s = []
+    index = 0
+    for i in shuffle:
+        m[:, index] = mat[:, i]
+        c.append(colnames[i])
+        s.append(subjects[i])
+        index += 1
+
+    return (m, c, rownames, s)
+    #return (mat, colnames, rownames, subjects)
 
 
 subjectToValue = ['android','basic','coffee','dontjudgeme','earthquake','egypt',
