@@ -1,6 +1,8 @@
 In the repository:
 - training.txt
 - test.txt
+- topics_small/ (6000 tweets from each topic)
+- topics_tiny/ (1000 tweets from each topic)
 
 In this directory's .gitignore, so move these files in yourself manually:
 - glove.6B.50d.txt (From the cs224u codelab)
