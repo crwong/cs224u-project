@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import bagged
-# import glove
+# import bagged
+import glove
 # import tfidf_parse
 
 import numpy as np
 
 SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
-MODEL = 'bagged'
+MODEL = 'gloveTwitter'
 OUTPUT = 'ensemble/out_%s-%s.txt' % (MODEL, SUFFIX)
 
 def main():
@@ -16,7 +16,7 @@ def main():
   # testMat = trainMat[cutoff:]
   # testVals = trainVals[cutoff:]
 
-  model, trainMat, trainVals = bagged.get_bag_logreg(TRAIN_FILE)
+  model, trainMat, trainVals = glove.get_glove_logreg(TRAIN_FILE)
   testMat = trainMat[(trainMat.shape[0]*0.7):,:]
   testVals = trainVals[(trainMat.shape[0]*0.7):]
 
