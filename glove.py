@@ -6,10 +6,9 @@ from sklearn import neighbors
 
 SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
+GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % ('small', 'small')
 
-GLOVE_MAT = None
-GLOVE_VOCAB = None
-GLVVEC_LENGTH = 50
+GLVVEC_LENGTH = 100
 
 GLOVE_CACHE = None
 
@@ -25,6 +24,30 @@ def build(src_filename, delimiter=',', header=True, quoting=csv.QUOTE_MINIMAL):
         rownames.append(line[0])
         mat.append(np.array(map(float, line[1: ])))
     return (np.array(mat), rownames, colnames)
+
+def parseA_GLOVE(filename):
+    num_lines = 0
+    infile = open(filename, 'r')
+    num_features = len(infile.readline().split()) - 1
+    num_lines += 1
+    for line in infile:
+        assert len(line.split()) == num_features + 1
+        num_lines += 1
+    infile.close()
+    mat = np.zeros((num_lines, num_features))
+    vocab = []
+    infile = open(filename, 'r')
+    index = 0
+    for line in infile:
+        arr = line.split()
+        vocab.append(arr[0])
+        mat[index,:] = [float(num) for num in arr[1:]]
+    infile.close()
+    return mat, vocab
+
+print 'Building GLOVE...'
+GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
+# GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
 
 def glvvec(w):
     """Return the GloVe vector for w."""
@@ -108,9 +131,6 @@ def get_glove_logreg(train_file, trainMat=None):
     return logreg, trainMat, trainVals
 
 if __name__ == "__main__":
-    print 'Building GLOVE...'
-    GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ',\
-                                      header=False, quoting=csv.QUOTE_NONE)
     trainMat = buildGloveTrainMat(TRAIN_FILE)
     # score_knn = glove_knn(TRAIN_FILE, trainMat=trainMat)
     # print 'KNN: ', score_knn
