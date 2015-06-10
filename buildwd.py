@@ -76,7 +76,7 @@ rownames contains the words.
 subjects contains the correct subjects in the order of colnames.
 File should have a tweet on each line. Each line should contain id, subject, tweet.
 """
-def buildWD(file_name, writeCSV=False):
+def buildWD(file_name, writeCSV=False, randomize=False):
     print "Building word dictionary"
     wordRowDict, numTweets, rownames = buildWords(file_name)
     print "Word dictionary finished"
@@ -105,6 +105,24 @@ def buildWD(file_name, writeCSV=False):
         print "Writing to CSV"
         writeToCSV(mat, colnames, wordRowDict, "trainWords.csv")
         print "Finished writing to CSV"
+
+    if randomize:
+        random.seed(17)
+        # RANDOMIZE
+        shuffle = range(len(subjects))
+        random.shuffle(shuffle)
+        m = np.zeros(mat.shape)
+        c = []
+        s = []
+        index = 0
+        for i in shuffle:
+            m[:, index] = mat[:, i]
+            c.append(colnames[i])
+            s.append(subjects[i])
+            index += 1
+
+        return (m, c, rownames, s)
+    #return (mat, colnames, rownames, subjects)
 
     return (mat, colnames, rownames, subjects)
 

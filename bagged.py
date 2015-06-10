@@ -3,7 +3,7 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-SUFFIX = 'small'
+SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 
 def bag_logreg(train_file):
@@ -11,9 +11,8 @@ def bag_logreg(train_file):
     return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
 
 def get_bag_logreg(train_file):
-    wd = buildwd.buildWD(train_file)
+    wd = buildwd.buildWD(train_file, randomize=True)
     colnames = wd[1]
-    rownames = wd[2]
     subjects = wd[3]
 
     trainMat = np.transpose(wd[0])
