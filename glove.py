@@ -4,9 +4,9 @@ import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-SUFFIX = 'tiny'
+SUFFIX = 'micro'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
-GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % ('small', 'small')
+GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % (SUFFIX, SUFFIX)
 
 GLVVEC_LENGTH = 100
 

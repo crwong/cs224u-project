@@ -4,7 +4,7 @@ import numpy as np
 
 MODELS = [
   'bagged',
-  'gloveIMDB',
+  'gloveTwitter',
   'tfidf',
   'baggedSent',
 ]
