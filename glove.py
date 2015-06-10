@@ -1,14 +1,17 @@
 import buildwd
 import csv
 import numpy as np
+import scipy
+from operator import itemgetter
 from sklearn import linear_model
 from sklearn import neighbors
+from sklearn import preprocessing
 
-SUFFIX = 'tiny'
+SUFFIX = 'micro'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % ('small', 'small')
 
-GLVVEC_LENGTH = 100
+GLVVEC_LENGTH = 50
 
 GLOVE_CACHE = None
 
@@ -24,6 +27,19 @@ def build(src_filename, delimiter=',', header=True, quoting=csv.QUOTE_MINIMAL):
         rownames.append(line[0])
         mat.append(np.array(map(float, line[1: ])))
     return (np.array(mat), rownames, colnames)
+
+def cosine(u, v):
+    # Use scipy's method:
+    return scipy.spatial.distance.cosine(u, v)
+    # Or define it yourself:
+    # return 1.0 - (np.dot(u, v) / (vector_length(u) * vector_length(v)))
+
+def neighbors(word=None, mat=None, rownames=None, distfunc=cosine):
+    if word not in rownames:
+        raise ValueError('%s is not in this VSM' % word)
+    w = mat[rownames.index(word)]
+    dists = [(rownames[i], distfunc(w, mat[i])) for i in xrange(len(mat))]
+    return sorted(dists, key=itemgetter(1), reverse=False)
 
 def parseA_GLOVE(filename):
     num_lines = 0
@@ -47,8 +63,10 @@ def parseA_GLOVE(filename):
     return mat, vocab
 
 print 'Building GLOVE...'
-GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
-#GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
+#GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
+GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
+
+print neighbors(word='niggas', mat=GLOVE_MAT, rownames=GLOVE_VOCAB)[: 5]
 
 def glvvec(w):
     """Return the GloVe vector for w."""
@@ -76,7 +94,7 @@ def glove_features_mean_unweighted(tweetRow, words):
         vec = glvvec(w)
         count += 1.0
         result += vec
-    return result / count
+    return result
 
 def glove_features_mean_weighted(tweetRow, words):
     result = np.zeros(GLVVEC_LENGTH)
@@ -89,7 +107,7 @@ def glove_features_mean_weighted(tweetRow, words):
 
 # len(tweetRow) == len(words)
 def glove_features(tweetRow, words):
-    return glove_features_mean_weighted(tweetRow, words)
+    return glove_features_mean_unweighted(tweetRow, words)
 
 def buildGloveTrainMat(train_file):
     wd = buildwd.buildWD(train_file, randomize=True)
