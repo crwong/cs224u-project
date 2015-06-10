@@ -8,7 +8,7 @@ import numpy as np
 
 SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
-MODEL = 'bagged'
+MODEL = 'baggedSent'
 OUTPUT = 'ensemble/out_%s-%s.txt' % (MODEL, SUFFIX)
 
 def main():
