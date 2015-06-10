@@ -8,7 +8,7 @@ SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 GLOVE_FILE = 'data/topics_%s/A_GLOVE_%s.txt' % ('small', 'small')
 
-GLVVEC_LENGTH = 50
+GLVVEC_LENGTH = 100
 
 GLOVE_CACHE = None
 
@@ -42,12 +42,13 @@ def parseA_GLOVE(filename):
         arr = line.split()
         vocab.append(arr[0])
         mat[index,:] = [float(num) for num in arr[1:]]
+        index += 1
     infile.close()
     return mat, vocab
 
 print 'Building GLOVE...'
-# GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
-GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
+GLOVE_MAT, GLOVE_VOCAB = parseA_GLOVE(GLOVE_FILE)
+#GLOVE_MAT, GLOVE_VOCAB, _ = build('data/glove.6B.50d.txt', delimiter=' ', header=False, quoting=csv.QUOTE_NONE)
 
 def glvvec(w):
     """Return the GloVe vector for w."""
@@ -91,7 +92,7 @@ def glove_features(tweetRow, words):
     return glove_features_mean_weighted(tweetRow, words)
 
 def buildGloveTrainMat(train_file):
-    wd = buildwd.buildWD(train_file)
+    wd = buildwd.buildWD(train_file, randomize=True)
     mat = wd[0]
     tweetIDs = wd[1]
     words = wd[2]
@@ -106,7 +107,7 @@ def glove_knn(train_file, trainMat=None):
     if trainMat == None:
         trainMat = buildGloveTrainMat(train_file)
 
-    wd = buildwd.buildWD(train_file)
+    wd = buildwd.buildWD(train_file, randomize=True)
     labels = wd[3]
     trainVals = buildwd.trainValsFromSubjects(labels)
 
@@ -122,7 +123,7 @@ def get_glove_logreg(train_file, trainMat=None):
     if trainMat == None:
         trainMat = buildGloveTrainMat(train_file)
 
-    wd = buildwd.buildWD(train_file)
+    wd = buildwd.buildWD(train_file, randomize=True)
     labels = wd[3]
     trainVals = buildwd.trainValsFromSubjects(labels)
 
