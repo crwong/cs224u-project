@@ -1,6 +1,7 @@
 import numpy as np
 from collections import defaultdict
 import random
+import tweetprocess
 
 def processWord(word):
     return (word.translate(None, '!.?!,\"\'\\')).lower()
@@ -18,14 +19,20 @@ def buildWords(file_name):
     for line in f:
         numTweets += 1
         words = line.split()
-        for word in words[2:]:
-            pword = processWord(word)
-            wordCountDict[pword] = wordCountDict[pword] + 1
-            if wordCountDict[pword] > 10 and pword not in wordRowDict:
-                rownames.append(pword)
-                wordRowDict[pword] = row
+        tweet = buildTweet(words[2:])
+        for word in tweetprocess.tokenize(tweet):
+            wordCountDict[word] = wordCountDict[word] + 1
+            if wordCountDict[word] > 10 and word not in wordRowDict:
+                rownames.append(word)
+                wordRowDict[word] = row
                 row += 1
     f.close()
+    i = 0
+    for word in wordRowDict:
+        print word
+        if i == 15:
+            break
+        i += 1
     print len(wordRowDict)
     return wordRowDict, numTweets, rownames
 
@@ -50,6 +57,14 @@ def writeToCSV(mat, colnames, wordRowDict, file_name):
         f.write(toWrite)
     f.close()
 
+def buildTweet(words):
+    tweet = ""
+    for i in range(len(words)):
+        tweet += words[i]
+        if i != len(words)-1:
+            tweet += " "
+    return tweet
+
 """
 Builds the WD matrix.
 colnames contains the tweet ids.
@@ -69,11 +84,11 @@ def buildWD(file_name, writeCSV=False):
     matCol = 0
     for line in f:
         words = line.split()
+        tweet = buildTweet(words[2:])
         tweetColumn = np.zeros(len(wordRowDict))
-        for word in words[2:]:
-            pword = processWord(word)
-            if pword in wordRowDict:
-                tweetColumn[wordRowDict[pword]] = tweetColumn[wordRowDict[pword]] + 1
+        for word in tweetprocess.tokenize(tweet):
+            if word in wordRowDict:
+                tweetColumn[wordRowDict[word]] = tweetColumn[wordRowDict[word]] + 1
         if np.sum(tweetColumn) > 0.5*(len(words)-2):
             colnames.append(words[0])
             subjects.append(words[1])
@@ -88,6 +103,7 @@ def buildWD(file_name, writeCSV=False):
         print "Finished writing to CSV"
 
     # RANDOMIZE
+    random.seed(17)
     shuffle = range(len(subjects))
     random.shuffle(shuffle)
     m = np.zeros(mat.shape)

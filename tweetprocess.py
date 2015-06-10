@@ -58,7 +58,7 @@ def tokenize(text):
     #text = re_sub(r"([!?.]){2,}", r" \1<repeat>")
     text = re_sub(r"([!?.]){1,}", r"")
     text = re_sub(r"\b(\S*?)(.)\2{2,}\b", r"\1\2<elong>")
-    text = re_sub(r"[()]","")
+    text = re_sub(r"[()\":]","")
  
     ## -- I just don't understand why the Ruby script adds <allcaps> to everything so I limited the selection.
     # text = re_sub(r"([^a-z0-9()<>'`\-]){2,}", allcaps)
@@ -79,6 +79,6 @@ if __name__ == '__main__':
     if text == "test":
         #text = "I TEST alllll kinds of #hashtags and #HASHTAGS, @mentions and 3000 (http://t.co/dkfjkdf). w/ <3 :) haha!!!!!"
         #text = "on 1 Fav Source+5 others like CNET News-Why Google Android is winning http://bit.ly/aW9QWn"
-        text = "on 1 Fav Source+5 others like CNET News-Why Google Android is winning https://docs.python.org/2/library/re.html"
+        text = "on 1 Fav\" Source+5 :others like CNET News-Why Google Android is winning https://docs.python.org/2/library/re.html"
     tokens = tokenize(text)
     print tokens
