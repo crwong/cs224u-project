@@ -1,10 +1,11 @@
 import buildwd
 import shallownn
+import random
 import numpy as np
 from sklearn import linear_model
 from sklearn import neighbors
 
-SUFFIX = 'micro'
+SUFFIX = 'tiny'
 TRAIN_FILE = 'data/topics_%s/ALL_CLEAN_%s.txt' % (SUFFIX, SUFFIX)
 
 def tfidf(mat=None, rownames=None):
@@ -44,16 +45,29 @@ def tfidf_logreg(train_file):
                 if pword in rownames:
                     numWords += 1
                     trainRow = trainRow + idf[0][rownames.index(pword)]
-            trainRow = (trainRow*1.0) / numWords
+            if (numWords > 0): trainRow = (trainRow*1.0) / numWords
             trainMat[matCol,:] = trainRow
             matCol += 1
     f.close()
 
     trainVals = buildwd.trainValsFromSubjects(subjects)
 
+    # RANDOMIZE
+    random.seed(17)
+    shuffle = range(len(subjects))
+    random.shuffle(shuffle)
+    train = []
+    labels = []
+    index = 0
+    for i in shuffle:
+        train.append(trainMat[i])
+        labels.append(trainVals[i])
+        index += 1
+    cutoff = int(index*0.7)
+
     logreg = linear_model.LogisticRegression()
-    logreg.fit(trainMat[0:(trainMat.shape[0]*0.7),:], trainVals[0:(trainMat.shape[0]*0.7)])
-    return logreg.score(trainMat[(trainMat.shape[0]*0.7):,:], trainVals[(trainMat.shape[0]*0.7):])
+    logreg.fit(train[0:cutoff], labels[0:cutoff])
+    return logreg.score(train[cutoff:], labels[cutoff:])
 
 def tfidf_knn(train_file):
     wd = buildwd.buildWD(train_file)
